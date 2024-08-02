@@ -32,7 +32,9 @@ export async function withBrowser(
 	chromeOptions.addArguments("--no-sandbox")
 	chromeOptions.addArguments("--disable-dev-shm-usage") // overcome limited resource problems
 	if (headless) {
-		chromeOptions.headless()
+    // https://www.selenium.dev/blog/2023/headless-is-going-away/
+    // https://stackoverflow.com/a/77457683/292502
+		chromeOptions.addArguments("--headless=new")
 	}
 
 	const driver = new Builder()
