@@ -14,6 +14,7 @@ import {
 	WebElement,
 	Key,
 	Condition,
+  Capabilities,
 } from "selenium-webdriver"
 import { Options } from "selenium-webdriver/chrome"
 import { IKey } from "selenium-webdriver/lib/input"
@@ -21,17 +22,46 @@ import * as fs from "fs-extra"
 import * as path from "path"
 import * as chromium from "chromium-version"
 
-const defaultTimeoutMs = 60_000
+const defaultTimeoutMs = 10_000
 
 export async function withBrowser(
 	fn: (browser: Browser) => Promise<void>,
 	headless = true
 ) {
 	const chromeOptions = new Options()
+  console.log(chromium.path)
 	chromeOptions.setChromeBinaryPath(chromium.path)
 	chromeOptions.addArguments("--no-sandbox")
 	chromeOptions.addArguments("--disable-dev-shm-usage") // overcome limited resource problems
-	if (headless) {
+  // From existing codes
+  chromeOptions.addArguments("--disable-extensions")
+  chromeOptions.addArguments("--disable-gpu")
+  chromeOptions.addArguments("--disable-setuid-sandbox")
+  chromeOptions.addArguments("--allow-insecure-localhost")
+  chromeOptions.addArguments("--no-cache")
+  chromeOptions.addArguments("--user-data-dir=/tmp/user-data")
+  chromeOptions.addArguments("--hide-scrollbars")
+  chromeOptions.addArguments("--enable-logging=stderr")
+  chromeOptions.addArguments("--v=99")
+  chromeOptions.addArguments("--log-level=0")
+  chromeOptions.addArguments("--single-process")
+  chromeOptions.addArguments("--data-path=/tmp/data-path")
+  chromeOptions.addArguments("--ignore-certificate-errors")
+  chromeOptions.addArguments("--homedir=/tmp")
+  chromeOptions.addArguments("--disk-cache-dir=/tmp/cache-dir")
+  chromeOptions.addArguments(
+      "user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
+  )
+  chromeOptions.addArguments("--start-maximized")
+  chromeOptions.addArguments("--window-size=1900,1080")
+  chromeOptions.addArguments("--disable-software-rasterizer")
+  chromeOptions.addArguments("--ignore-certificate-errors-spki-list")
+  chromeOptions.addArguments("--ignore-ssl-errors")
+  chromeOptions.addArguments("--crash-dumps-dir=/tmp")
+  chromeOptions.addArguments("--profile-directory=Default")
+  chromeOptions.addArguments("--disable-infobars")
+
+  if (headless) {
     // https://www.selenium.dev/blog/2023/headless-is-going-away/
     // https://stackoverflow.com/a/77457683/292502
 		chromeOptions.addArguments("--headless=new")
@@ -40,12 +70,19 @@ export async function withBrowser(
 	const driver = new Builder()
 		.forBrowser("chrome")
 		.setChromeOptions(chromeOptions)
+    .withCapabilities(Capabilities.chrome().set("pageLoadStrategy", "normal"))
 		.build()
 	try {
+    console.log("00")
 		await fn(new Browser(driver))
+    console.log("01")
 		await driver.quit()
+    console.log("02")
 	} catch (error) {
+    console.log("03")
+    console.log(error.toString())
 		if (headless) {
+      console.log("04")
 			await driver.quit()
 		}
 		throw error
