@@ -2,17 +2,17 @@
 	"name": "selenium",
 	"version": "1.0.0",
 	"description": "boilerplate for gcloud functions",
-	"main": "build/main.js",
+	"main": "dist/main.js",
 	"watch": {
-		"server": "build/*.js"
+		"server": "dist/*.js"
 	},
 	"scripts": {
-		"start": "run-p watch-server watch-tsc",
-		"watch-server": "npm-watch server",
+    "start": "run-p watch-server watch-tsc",
+    "watch-server": "npm-watch server",
 		"watch-tsc": "tsc --watch",
 		"server": "GOOGLE_APPLICATION_CREDENTIALS=credentials.json functions-framework --target=default",
-		"build": "rm -rf build && tsc",
-		"deploy": "gcloud functions deploy main --runtime nodejs16 --entry-point default --trigger-http --memory=2048MB --timeout=540s",
+		"build": "rm -rf dist && tsc",
+		"deploy": "gcloud functions deploy main --runtime nodejs18 --entry-point default --trigger-http --memory=2048MB --timeout=540s",
 		"release": "npm run build && npm run deploy"
 	},
 	"keywords": [],
