@@ -19,6 +19,7 @@ ff.http('DuckDuckGoFunction', async (req: ff.Request, res: ff.Response) => {
     }
   
     if (query.trim()) {
+      let response = ""
       await withBrowser(async browser => {
         const ddgBaseUrl = "https://duckduckgo.com/"
         // The trick:
@@ -39,7 +40,6 @@ ff.http('DuckDuckGoFunction', async (req: ff.Request, res: ff.Response) => {
         // div[data-react-module-id="wikinlp"] > div > div > div[1] > div > div > p
         // const duckAssistTile = await browser.find('[data-react-module-id="wikinlp"]')
     
-        let response = "";
         const reactModule = await browser.find('.react-module')
         if (reactModule) {
           const paragraphs = await reactModule.findElements(By.css("p"))
@@ -48,9 +48,9 @@ ff.http('DuckDuckGoFunction', async (req: ff.Request, res: ff.Response) => {
             response = duackAssistMain || ""
           }
         }
-    
-        res.send(response)
       })
+
+      res.send(response)
     } else {
       res.status(400)
     }
