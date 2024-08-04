@@ -9,10 +9,19 @@ import { By } from "selenium-webdriver"
 export default async function main(req: Request, res: Response) {
 	await withBrowser(async browser => {
     const ddgBaseUrl = "https://duckduckgo.com/"
-    // The trick: load the landing page first
+    // The trick:
+    // 1. load the landing page first
     await browser.visit(ddgBaseUrl)
-    // And then load the query URL
-		await browser.visit(`${ddgBaseUrl}?q=what+is+palm2&t=h_&ia=web&assist=true`)
+    // (2.1 - not part of the trick - Sanitize the query)
+    const url = new URL(req.url)
+    const params = new URLSearchParams(url.search)
+    const query = params.get('q') || ''
+    const q = Array.from(query.trim())
+      .filter(char => char.match(/[a-zA-Z0-9\s+]/))
+      .join('')
+      .replace(/\s+/g, '+')
+    // 2.2 And then load the query URL
+    await browser.visit(`${ddgBaseUrl}?q=${q}&t=h_&ia=web&assist=true`)
 
 		// Wait for the DuckAssist tile to load.
     // let duckAssistLabel = await browser.findText("DuckAssist")
