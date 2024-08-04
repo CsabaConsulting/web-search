@@ -2,14 +2,21 @@ import * as ff from '@google-cloud/functions-framework';
 import main from "./main"
 
 ff.http('DuckDuckGoFunction', (req: ff.Request, res: ff.Response) => {
-  const url = new URL(req.url)
-  const params = new URLSearchParams(url.search)
-  const token = params.get('token')
+  const params = req.params
+  let token = ''
+  if ('token' in params) {
+    token = params['token']
+  }
+
   const accesstToken = process.env.ACCESS_TOKEN
   if (token !== undefined && token && accesstToken !== undefined && token === accesstToken) {
     res.status(401)
   } else {
-    const query = params.get('q') || ''
+    let query = ''
+    if ('q' in params) {
+      query = params['q']
+    }
+  
     if (query.trim()) {
       main(req, res)
     } else {
