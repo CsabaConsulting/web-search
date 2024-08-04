@@ -2,7 +2,7 @@
 	"name": "selenium",
 	"version": "1.0.0",
 	"description": "boilerplate for gcloud functions",
-	"main": "dist/main.js",
+	"main": "dist/index.js",
 	"watch": {
 		"server": "dist/*.js"
 	},
@@ -12,7 +12,7 @@
 		"watch-tsc": "tsc --watch",
 		"server": "GOOGLE_APPLICATION_CREDENTIALS=credentials.json functions-framework --target=default",
 		"build": "rm -rf dist && tsc",
-		"deploy": "gcloud functions deploy main --runtime nodejs18 --entry-point default --trigger-http --memory=2048MB --timeout=540s",
+		"deploy": "gcloud functions deploy DuckDuckGoFunction --runtime nodejs18 --entry-point DuckDuckGoFunction --trigger-http --memory=2048MB --timeout=540s",
 		"release": "npm run build && npm run deploy"
 	},
 	"keywords": [],
