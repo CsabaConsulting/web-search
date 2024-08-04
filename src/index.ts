@@ -1,7 +1,7 @@
 import * as ff from '@google-cloud/functions-framework';
 import main from "./main"
 
-ff.http('DuckDuckGoFunction', (req: ff.Request, res: ff.Response) => {
+ff.http('DuckDuckGoFunction', async (req: ff.Request, res: ff.Response) => {
   const params = req.params
   let token = ''
   if ('token' in params) {
@@ -18,7 +18,7 @@ ff.http('DuckDuckGoFunction', (req: ff.Request, res: ff.Response) => {
     }
   
     if (query.trim()) {
-      main(req, res)
+      await main(req, res)
     } else {
       res.status(400)
     }
