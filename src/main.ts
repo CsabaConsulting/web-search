@@ -9,9 +9,9 @@ import { By } from "selenium-webdriver"
 export default async function main(req: Request, res: Response) {
 	await withBrowser(async browser => {
     const ddgBaseUrl = "https://duckduckgo.com/"
-    // The trick: load the landing page
+    // The trick: load the landing page first
     await browser.visit(ddgBaseUrl)
-    // Then load the query URL
+    // And then load the query URL
 		await browser.visit(`${ddgBaseUrl}?q=what+is+palm2&t=h_&ia=web&assist=true`)
 
 		// Wait for the DuckAssist tile to load.
